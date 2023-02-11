@@ -1,5 +1,5 @@
 <template>
-  <div class="chat" ref="currentMessage">
+  <div class="chat" ref="currentMsg">
     <div
       v-if="!chat.isAi"
       class="
@@ -76,6 +76,11 @@
               "
             >
               {{ chat.value }}
+
+              <div v-for="(message, index) in messages" :key="index + 'sdf'">
+                <span v-if="index === currentMessage">{{ currentChar }}</span>
+                <span v-else>{{ message }}</span>
+              </div>
             </div>
           </div>
           <div
@@ -228,7 +233,7 @@
                 "
               >
                 <p>
-                  {{ chat.value }}
+                  {{ currentChar }}
                 </p>
               </div>
             </div>
@@ -320,18 +325,55 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch, computed } from "vue";
 const props = defineProps({
   chat: {
     type: Object || null,
   },
 });
-const currentMessage = ref(null);
+
+let test = ref("");
+
+let currentChar = ref("");
+let typingSpeed = ref(20);
+let currentMsg = ref(null);
+
+const getData = computed(() => {
+  return props.chat;
+});
+
+const wait = (time) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};
+
 onMounted(async () => {
   await nextTick();
-  const div = currentMessage.value;
+  const div = currentMsg.value;
   div.scrollIntoView({ behavior: "smooth" });
 });
+
+watch(
+  getData,
+  async (newValue, oldValue) => {
+    const fetchMessages = async () => {
+      if (newValue.isAi) {
+        for (let i = 0; i < newValue.value.length; i++) {
+          await wait(typingSpeed.value);
+          currentChar.value = newValue.value.slice(0, i + 1);
+        }
+        // await wait(100);
+      }
+    };
+    fetchMessages();
+  },
+  { immediate: true }
+);
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+span {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+</style>

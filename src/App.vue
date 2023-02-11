@@ -3,7 +3,7 @@ import { openai } from "./openai/index";
 import Guides from "./components/Guides.vue";
 import Chat from "./components/Chat.vue";
 import Sidebar from "./components/Sidebar.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 let query = ref([]);
 let response = ref([]);
@@ -22,7 +22,7 @@ const getAnswer = async (message) => {
     });
     wrapper.value.push({
       isAi: true,
-      value: "Loading....",
+      value: "|",
     });
     const res = await openai.createCompletion({
       model: "text-davinci-003",
@@ -37,12 +37,10 @@ const getAnswer = async (message) => {
       value: data.trim(),
     });
 
-    console.log(wrapper.value);
     let newquestions = wrapper.value.filter((item) => {
       return !item.isAi;
     });
     localStorage.setItem("threads", JSON.stringify(newquestions));
-    console.log(newquestions, " asdf");
     getQuestions();
   } catch ({ error }) {
     response.value = error;
