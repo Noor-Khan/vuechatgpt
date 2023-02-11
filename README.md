@@ -1,6 +1,6 @@
 # vuechatgpt
 
-This template should help get you started developing with Vue 3 in Vite.
+This template should help get you started developing with Vue 3 in Vite. It's clone of Chat GPT app using Vue3, Vite, and TailwindCSS
 
 ## Recommended IDE Setup
 
