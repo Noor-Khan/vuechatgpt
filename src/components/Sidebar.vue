@@ -158,7 +158,7 @@ const changeToLight = () => {
             </div>
           </div>
           <a
-            v-if="questions.length"
+            v-if="questions && questions.length"
             @click="clearStorage()"
             class="
               flex
